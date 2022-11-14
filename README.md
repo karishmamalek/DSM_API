@@ -1,2 +1,2 @@
 # DSM_API
-Dailysmsmaza APis
+Dailysmsmaza APIs
