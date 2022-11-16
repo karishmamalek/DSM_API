@@ -20,6 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::get('categories',[CommonController::class,'categories']);
+Route::get('category-message/{id}',[CommonController::class,'category_message']);
 /* Second Method pass class/methods and controller
 //Route::get('/categories', 'App\Http\Controllers\API\CommonController@categories');
 */
