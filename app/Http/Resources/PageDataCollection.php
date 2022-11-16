@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
-
 class PageDataCollection extends ResourceCollection
 {
     /**
@@ -12,16 +11,26 @@ class PageDataCollection extends ResourceCollection
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
+    public function lastPageUrl()
+    {
+        $last = $this->lastPage();
+
+        return $this->url($last);
+    }
     public function toArray($request)
     {
        // return parent::toArray($request);
        return [
         'data' => $this->collection,
         'pagination' => [
-            'total' => $this->total(),
-            'count' => $this->count(),
-            'per_page' => $this->perPage(),
-            'current_page' => $this->currentPage(),
+            'first_page_url' => ($this->url(0) != '' ? $this->url(0) : null),
+            'last_page' => ($this->lastPage() != '' ? $this->lastPage() : null),
+            'last_page_url' => ($this->lastPageUrl() != '' ? $this->lastPageUrl() : null),
+            'next_page_url' => ($this->nextPageUrl() != '' ? $this->nextPageUrl() : null),
+            'per_page' =>  ($this->perPage() != '' ? $this->perPage() : null),
+            'prev_page_url' => ($this->previousPageUrl() != '' ? $this->previousPageUrl() : null),
+            'total_records' => $this->total(),
+            'current_page' => ($this->currentPage() != '' ? $this->currentPage() : null),
             'total_pages' => $this->lastPage()
         ],
     ];
@@ -31,7 +40,6 @@ class PageDataCollection extends ResourceCollection
     public function withResponse($request, $response)
     {
         $jsonResponse = json_decode($response->getContent(), true);
-        unset($jsonResponse['links'],$jsonResponse['meta']);
         $response->setContent(json_encode($jsonResponse));
     }
 }

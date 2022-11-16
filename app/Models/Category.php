@@ -18,8 +18,7 @@ class Category extends Model
         ->join('message_sub', 'message_sub.sms_id', '=', 'category_sub.cat_id')
         ->selectRaw('message.*, REPLACE(message.sms, "<br/>", "") AS sms')
         ->where('message_sub.cat_id', '=',$category_id )
-        ->paginate($perPage);
-       // return $msgData;
+        ->inRandomOrder()->paginate($perPage);
         return new PageDataCollection($msgData);
 
     }

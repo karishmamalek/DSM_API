@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PageDataCollection;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,8 +19,8 @@ class CommonController extends Controller
         if (!is_numeric($perPage)) {
             $perPage = 10;
         }
-       $data = Category::simplePaginate($perPage);
-       return jsonResponse(200,"Categories",$data);
+       $data = Category::paginate($perPage);
+       return jsonResponse(200,"Categories", new PageDataCollection($data));
     }
 
     /**
