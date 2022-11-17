@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
@@ -20,6 +19,7 @@ class CommonController extends Controller
             $perPage = 10;
         }
        $data = Category::paginate($perPage);
+       
        return jsonResponse(200,"Categories", new PageDataCollection($data));
     }
 
@@ -31,12 +31,40 @@ class CommonController extends Controller
         if (!is_numeric($perPage)) {
           $perPage = 10;
         }
-       // DB::enableQueryLog();
-        $data = Category::messageFromCategories($id,$perPage);
-        //$quries = DB::getQueryLog();
-        //return dd($quries);
-       // die();
-        return jsonResponse(200,"Message Detail",$data);
-    }
+       DB::enableQueryLog(); // Enable query log
 
+        $header = $request->header('ANDROID-APP-VERSION');
+        $msgData = DB::table('message_sub')
+        ->join('message', 'message.id', '=', 'message_sub.sms_id')
+        ->join('category', 'category.cat_id', '=', 'message_sub.cat_id')
+        ->join('category_sub', 'category.cat_id', '=', 'category_sub.cat_id')
+        ->selectRaw('category.cat_id, category.android_app_version,message.*, REPLACE(message.sms, "<br/>", "") AS sms')
+        ->where('message_sub.cat_id', '=',$id )
+        ->where('category.android_app_version', '=', '1.0.7')
+        ->inRandomOrder()->paginate($perPage);
+        dd(DB::getQueryLog()); // Show results of log
+
+        // echo "<pre>";
+         //print_r($msgData);
+        // echo "</pre>";
+        
+        if(!empty($msgData)){
+            return jsonResponse(200,"Message Detail",new PageDataCollection($msgData));
+        }else{
+            return jsonResponse(200,"Error",null);
+        }
+       // $data = Category::messageFromCategories($id,$perPage);
+        
+        
+        
+       // $arrayData = $data[''];
+        // $datadecode = html_entity_decode($data['']);
+        // $output = json_decode($datadecode,true);
+       // print_r($output);
+        //print_r($output->status_code);
+        //$parsed_json = json_decode($output->data);
+        //die();
+        /*if($header >= $app_version){}else{}*/
+        
+    }
 }
