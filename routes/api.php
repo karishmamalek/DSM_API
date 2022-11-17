@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\CommonController;
+use App\Models\Category;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,8 +20,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('categories',[CommonController::class,'categories']);
-Route::get('category-message/{id}',[CommonController::class,'category_message']);
-/* Second Method pass class/methods and controller
-//Route::get('/categories', 'App\Http\Controllers\API\CommonController@categories');
-*/
+Route::get('/categories', 'App\Http\Controllers\API\CommonController@categories');
+Route::get('/category-message/{id}', 'App\Http\Controllers\API\CommonController@category_message')->middleware(checkHeader::class);
+// Route::get('/category-message/{id}', array('uses'=> 'App\Http\Controllers\API\CommonController@category_message', 'middleware'=>['checkHeader'], function($id){
+//  }));
+// Route::get('/category-message/{id}',['middleware' => 'checkHeader'], function($id){
+
+// });
+// Route::group(['middleware' => 'checkHeader:{id}'], function($id) {
+//     Route::get('/category-message/{id}', 'App\Http\Controllers\API\CommonController@category_message');
+// });
