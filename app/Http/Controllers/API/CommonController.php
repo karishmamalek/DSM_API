@@ -6,6 +6,7 @@ use App\Http\Resources\PageDataCollection;
 use App\Models\Category;
 use App\Models\Message;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redis;
 
@@ -19,9 +20,18 @@ class CommonController extends Controller
         if (!is_numeric($perPage)) {
             $perPage = 10;
         }
-       $data = Category::paginate($perPage);
+       $catData = Category::paginate($perPage);
+       $CATEGORY_LISTING_MSG = Config::get('constants.CATEGORY_LISTING_MSG');
+       $ERROR_MSG = Config::get('constants.ERROR_MSG');
+       $SUCCESS_STATUS_CODE = Config::get('constants.SUCCESS_STATUS_CODE');
+       $ERROR_STATUS_CODE = Config::get('constants.ERROR_STATUS_CODE');
        
-       return jsonResponse(200,"Categories", new PageDataCollection($data));
+       if(!empty($catData)){
+        return jsonResponse($SUCCESS_STATUS_CODE,$CATEGORY_LISTING_MSG, new PageDataCollection($catData));
+       }else{
+        return jsonResponse($ERROR_STATUS_CODE,$ERROR_MSG, null);
+       }
+       
     }
 
     /**
@@ -32,12 +42,17 @@ class CommonController extends Controller
         if (!is_numeric($perPage)) {
           $perPage = 10;
         }
-        $data = Message::get_messages_from_categories($id,$perPage);
-        
-        if(!empty($data)){
-            return jsonResponse(200,"Message Detail",$data);
+
+        $smsData = Message::get_messages_from_categories($id,$perPage);
+        $MESSAGE_SUCCESS_MSG = Config::get('constants.MESSAGE_SUCCESS_MSG');
+        $NO_DATA_FOUND_MSG = Config::get('constants.NO_DATA_FOUND_MSG');
+        $SUCCESS_STATUS_CODE = Config::get('constants.SUCCESS_STATUS_CODE');
+        $ERROR_STATUS_CODE = Config::get('constants.ERROR_STATUS_CODE');
+
+        if(!empty($smsData)){
+            return jsonResponse($SUCCESS_STATUS_CODE,$MESSAGE_SUCCESS_MSG,$smsData);
         }else{
-            return jsonResponse(204,"No Data Found",null);
+            return jsonResponse($ERROR_STATUS_CODE,$NO_DATA_FOUND_MSG,null);
         }
         
     }

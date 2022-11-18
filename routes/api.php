@@ -22,11 +22,3 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::get('/categories', 'App\Http\Controllers\API\CommonController@categories');
 Route::get('/category-message/{id}', 'App\Http\Controllers\API\CommonController@category_message')->middleware(checkHeader::class);
-// Route::get('/category-message/{id}', array('uses'=> 'App\Http\Controllers\API\CommonController@category_message', 'middleware'=>['checkHeader'], function($id){
-//  }));
-// Route::get('/category-message/{id}',['middleware' => 'checkHeader'], function($id){
-
-// });
-// Route::group(['middleware' => 'checkHeader:{id}'], function($id) {
-//     Route::get('/category-message/{id}', 'App\Http\Controllers\API\CommonController@category_message');
-// });
