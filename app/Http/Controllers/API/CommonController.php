@@ -42,7 +42,6 @@ class CommonController extends Controller
         if (!is_numeric($perPage)) {
           $perPage = 10;
         }
-
         $smsData = Message::get_messages_from_categories($id,$perPage);
         $MESSAGE_SUCCESS_MSG = Config::get('constants.MESSAGE_SUCCESS_MSG');
         $NO_DATA_FOUND_MSG = Config::get('constants.NO_DATA_FOUND_MSG');
